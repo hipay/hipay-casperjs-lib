@@ -1,0 +1,19 @@
+{
+  "name": "hipay-casperjs-lib",
+  "version": "1.0.0",
+  "description": "CasperJS Library for HiPay functionals tests",
+  "main": "0000-functions-payment.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hipay/hipay-casperjs-lib.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hipay/hipay-casperjs-lib/issues"
+  },
+  "homepage": "https://github.com/hipay/hipay-casperjs-lib#readme"
+}
