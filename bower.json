@@ -1,0 +1,17 @@
+{
+  "name": "hipay-casperjs-lib",
+  "description": "CasperJS Library for HiPay functionals tests",
+  "main": "0000-functions-payment.js",
+  "authors": [
+    "BERTHELOT Aymeric <lemaildeaymeric@gmail.com>"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/hipay/hipay-casperjs-lib",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
