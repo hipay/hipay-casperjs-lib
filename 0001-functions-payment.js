@@ -46,6 +46,8 @@ casper.test.begin('Functions', function(test) {
             case "mastercard":
             case "maestro":
             case "cb":
+            case "visa_3ds":
+            case "amex":
                 this.fillFormCC(payment_product);
                 break;
             default:
