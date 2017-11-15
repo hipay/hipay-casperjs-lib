@@ -43,6 +43,9 @@ casper.test.begin('Functions', function(test) {
                 this.fillFormSdd();
                 break;
             case "visa":
+            case "mastercard":
+            case "maestro":
+            case "cb":
                 this.fillFormCC(payment_product);
                 break;
             default:
@@ -63,7 +66,7 @@ casper.test.begin('Functions', function(test) {
                 this.waitForSelector('select#payment-product-switcher', function success() {
                     this.warn("OK. This payment template is deprecated");
                     this.fillSelectors('#form-payment', {
-                        'select[name="paymentproductswitcher"]': "visa"
+                        'select[name="paymentproductswitcher"]': payment_product
                     });
                     this.fillCCFormular(payment_product);
                 }, function fail() {
@@ -85,7 +88,7 @@ casper.test.begin('Functions', function(test) {
             if(this.exists('iframe#tokenizerFrame')) {
                 this.withFrame(0, function() {
                     this.fillSelectors('form#tokenizerForm', {
-                        'input[name="tokenizerForm:cardNumber"]': cardsNumber.VI,
+                        'input[name="tokenizerForm:cardNumber"]': cardsNumber.visa,
                         'input[name="tokenizerForm:cardHolder"]': holder,
                         'select[name="tokenizerForm:cardExpiryMonth"]': month,
                         'select[name="tokenizerForm:cardExpiryYear"]': year,
@@ -95,7 +98,7 @@ casper.test.begin('Functions', function(test) {
             }
             else {
                 this.fillSelectors('form#form-payment', {
-                    'input[name="cardNumber"]': cardsNumber.VI,
+                    'input[name="cardNumber"]': cardsNumber.visa,
                     'input[name="cardHolder"]': holder,
                     'select[name="cardExpiryMonth"]': month,
                     'select[name="cardExpiryYear"]': year,
@@ -127,8 +130,8 @@ casper.test.begin('Functions', function(test) {
             }, false);
             this.thenClick('input[name="bankaccountselection"]', function() {
                 this.fillSelectors('#registrationform', {
-                    'input[name="iban"]': ibanNumber.GB,
-                    'input[name="bic"]': bicNumber[0]
+                    'input[name="iban"]': ibanNumber.gb,
+                    'input[name="bic"]': bicNumber.gb
                 }, false);
                 this.click('body');
                 this.waitUntilVisible('div.ajaxsuccess', function success() {
