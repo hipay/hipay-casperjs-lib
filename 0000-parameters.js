@@ -12,7 +12,8 @@ var cardsNumber = {
     bicNumber = {
         gb:"ALBLGB2L",
         fr:"PSSTFRPPXXX"
-    };
+    },
+    baseURL='';
 
 casper.test.begin('Parameters Hipay Casper JS Lib', function(test) {
     casper.echo('Paramètres chargés !', 'INFO');
