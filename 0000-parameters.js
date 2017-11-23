@@ -13,7 +13,9 @@ var cardsNumber = {
         gb:"ALBLGB2L",
         fr:"PSSTFRPPXXX"
     },
-    baseURL='';
+    baseURL='',
+    childProcess = require("child_process"),
+    spawn = childProcess.spawn;
 
 casper.test.begin('Parameters Hipay Casper JS Lib', function(test) {
     casper.echo('Paramètres chargés !', 'INFO');
