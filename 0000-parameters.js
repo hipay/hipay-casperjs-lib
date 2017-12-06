@@ -10,7 +10,7 @@ var cardsNumber = {
         fr:"FR1420041010050500013M02606"
     },
     bicNumber = {
-        gb:"ALBLGB2L",
+        gb:"PSSTFRPPXXX",
         fr:"PSSTFRPPXXX"
     },
     baseURL='',
