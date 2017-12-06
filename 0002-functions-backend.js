@@ -12,7 +12,7 @@
 casper.test.begin('Functions', function(test) {
 
     /* Log to BO TPP */
-    casper.logToBackend = function(loginBackend,passBackend) {
+    casper.logToHipayBackend = function(loginBackend,passBackend) {
         this.echo("Accessing and logging to TPP BackOffice...", "INFO");
         this.waitForUrl(/login/, function success() {
             this.fillSelectors('form', {
