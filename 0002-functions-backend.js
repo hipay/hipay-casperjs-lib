@@ -161,7 +161,7 @@ casper.test.begin('Functions', function(test) {
 
     /* Search an order in engine */
     casper.searchAndSelectOrder = function(orderID) {
-        this.echo("Finding cart ID # " + cartID + " in order list...", "INFO");
+        this.echo("Finding cart ID # " + cartID + "and order ID# " + orderID +" in order list...", "INFO");
         this.waitForUrl(/manage/, function success() {
             this.click('input#checkbox-orderid');
             this.fillSelectors('form#form-manage', {
