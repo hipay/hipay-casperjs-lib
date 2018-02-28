@@ -178,35 +178,46 @@ casper.test.begin('Functions', function(test) {
     /**********************************************************/
     casper.fillFormSofort = function() {
         this.waitForUrl(/go\/select_country/, function success() {
-            this.click('form#WizardForm button');
-            this.wait(2000, function() {
-                this.waitForUrl(/go\/login/, function success() {
-                    this.fillSelectors('form#WizardForm', {
-                        'input[name="data[BackendForm][LOGINNAME__USER_ID]"]': "00000",
-                        'input[name="data[BackendForm][USER_PIN]"]': "123456789"
-                    }, false);
-                    this.click("form#WizardForm button");
-                    test.info("Credentials inserted");
-                    this.waitForUrl(/go\/select_account/, function success() {
-                        this.click("input#account-1");
-                        this.click("form#WizardForm button");
-                        test.info("Account selected");
-                        this.waitForUrl(/go\/provide_tan/, function success() {
+            this.fillSelectors('form#WizardForm', {
+                'input[name="data[BankCode][search]"]': "00000",
+            }, false);
+
+            this.waitForSelector('div#BankSearcherResultsContent a', function success() {
+                this.click('div#BankSearcherResultsContent a');
+
+                this.wait(4000, function() {
+                    this.waitForUrl(/go\/login/, function success() {
                             this.fillSelectors('form#WizardForm', {
-                                'input[name="data[BackendForm][TAN]"]': "12345"
+                                'input[name="data[BackendForm][LOGINNAME__USER_ID]"]': "00000",
+                                'input[name="data[BackendForm][USER_PIN]"]': "123456789"
                             }, false);
                             this.click("form#WizardForm button");
-                            test.info("TAN code inserted");
+                            test.info("Credentials inserted");
+                            this.waitForUrl(/go\/select_account/, function success() {
+                                this.click("input#account-1");
+                                this.click("form#WizardForm button");
+                                test.info("Account selected");
+                                this.waitForUrl(/go\/provide_tan/, function success() {
+                                    this.fillSelectors('form#WizardForm', {
+                                        'input#BackendFormTan': "12345"
+                                    }, false);
+                                    this.click("form#WizardForm button");
+                                    test.info("TAN code inserted");
+                                }, function fail() {
+                                    test.assertUrlMatch(/go\/provide_tan/, "Payment TAN page exists");
+                                },20000);
+                            }, function fail() {
+                                test.assertUrlMatch(/go\/select_account/, "Payment account page exists");
+                            });
                         }, function fail() {
-                            test.assertUrlMatch(/go\/provide_tan/, "Payment TAN page exists");
-                        },20000);
-                    }, function fail() {
-                        test.assertUrlMatch(/go\/select_account/, "Payment account page exists");
-                    });
-                }, function fail() {
-                    test.assertUrlMatch(/go\/login/, "Payment login page exists");
+                            test.assertUrlMatch(/go\/login/, "Payment login page exists");
+                        },
+                        5000);
                 });
+            }, function fail() {
+                test.assertExists('div#BankSearcherResultsContent a', "Select field exists");
             });
+
         }, function fail() {
             test.assertUrlMatch(/go\/select_country/, "Payment country page exists");
         }, 20000);
