@@ -26,6 +26,11 @@ casper.test.begin('Functions', function(test) {
                 test.done();
             }
         }, function fail() {
+            this.waitForUrl(/dashboard/, function success() {
+                test.info("Already logged to admin panel !");
+            }, function fail() {
+                test.assertUrlMatch(/dashboard/, "Admin dashboard exists");
+            });
             test.assertUrlMatch(/login/, "Login page exists");
         });
     };
