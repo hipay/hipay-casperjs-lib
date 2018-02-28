@@ -101,7 +101,6 @@ casper.test.begin('Functions', function(test) {
             else {
                 this.fillSelectors('form#form-payment', {
                     'input[name="cardNumber"]': cardsNumber.visa,
-                    'input[name="cardHolder"]': holder,
                     'select[name="cardExpiryMonth"]': month,
                     'select[name="cardExpiryYear"]': year,
                     'input[name="cardSecurityCode"]': code
