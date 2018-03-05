@@ -103,7 +103,7 @@ casper.test.begin('Functions', function(test) {
             hash = this.fetchText(x('//tr/td/pre[contains(., "Hash")]')).split('\n')[6].split(':')[1].trim();
             data = this.fetchText('textarea.copy-transaction-message-textarea');
             try {
-                test.assert(hash.length > 1, "Hash Code captured !");
+                test.assert(hash.length > 1, "Hash Code captured :" + hash);
                 test.assertNotEquals(data.indexOf("status=" + status), -1, "Data request captured !");
             } catch(e) {
                 if(String(e).indexOf("Hash") != -1)
