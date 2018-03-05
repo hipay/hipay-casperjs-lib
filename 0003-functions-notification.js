@@ -40,7 +40,7 @@ casper.test.begin('Functions', function(test) {
         })
     }
 
-    casper.processNotifications = function(authorize,request,capture,partial) {
+    casper.processNotifications = function(authorize,request,capture,partial,account) {
         casper.thenOpen(urlBackend,function() {
             if (loginBackend == '' && passBackend == '') {
                 loginBackend = casper.cli.get('login-backend');
@@ -55,7 +55,7 @@ casper.test.begin('Functions', function(test) {
         })
         /* Select sub-account use for test*/
         .then(function() {
-            this.selectAccountBackend("OGONE_DEV");
+            this.selectAccountBackend(account);
         })
         /* Open Transactions tab */
         .then(function() {
