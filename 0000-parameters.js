@@ -15,6 +15,9 @@ var cardsNumber = {
     },
     baseURL='',
     childProcess = require("child_process"),
+    urlGiftCardAction = casper.cli.get('gift-card-url'),
+    giftCardNumber = casper.cli.raw.get('gift-card-number'),
+    giftCardCvv = casper.cli.get('gift-card-cvv'),
     spawn = childProcess.spawn;
 
 casper.test.begin('Parameters Hipay Casper JS Lib', function(test) {
