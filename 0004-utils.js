@@ -21,7 +21,7 @@ casper.test.begin('Functions', function (test) {
                 'card-number': giftCardNumber,
                 'cvv': giftCardCvv
             }
-        }).then(function () {
+        }).waitForUrl(/gift-card\.php$/, function success() {
             var maxAmountHTML = this.evaluate(function () {
                 return document.querySelector('p.data-print-row:nth-child(10)').innerHTML.replace(',', '.');
             });
@@ -58,7 +58,9 @@ casper.test.begin('Functions', function (test) {
                 test.assertEquals(maxAmount, currentAmount, 'Current prepaid card amount equals to maximum amount');
             }
 
-        });
+        }, function fail() {
+            test.assertUrlMatch(/urlGiftCardAction/, "urlGiftCardAction page exists");
+        }, 25000);
     };
 
     casper.echo('Functions HiPay library Utils loaded !', 'INFO');

@@ -10,6 +10,7 @@ else
 		echo "Executing CURL command in order to simulate a HTTP POST request to server... [ $3 ] "
 	fi
 
+	echo "Data Generator $1"
 	status=$(curl -H "X-ALLOPASS-SIGNATURE: $2" -d "$1" -sw '%{http_code}' $3)
 
 	echo $status
