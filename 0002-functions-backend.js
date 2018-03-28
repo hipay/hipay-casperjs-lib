@@ -178,7 +178,7 @@ casper.test.begin('Functions', function(test) {
             this.waitForUrl(/list/, function success() {
                 test.info("Done list");
                 // Select the first order if several orders are present
-                this.waitForSelector("table.datatable-transactions tbody tr:first-child", function success() {
+                this.waitForSelector('table.datatable-transactions tbody tr:first-child a[data-original-title="View transaction details"]', function success() {
                     this.click('table.datatable-transactions tbody tr:first-child a[data-original-title="View transaction details"]');
                 }, function fail() {
                     test.assertExists('table.datatable-transactions tbody tr:first-child', "History block of this order exists");
