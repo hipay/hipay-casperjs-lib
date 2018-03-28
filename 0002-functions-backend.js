@@ -123,7 +123,7 @@ casper.test.begin('Functions', function(test) {
         child = spawn('/bin/bash', [pathGenerator, data, code, baseURL + urlNotification]);
         try {
             child.stdout.on('data', function(out) {
-                casper.wait(3000, function() {
+                casper.wait(6000, function() {
                     if(out.indexOf("CURL") != -1)
                         this.echo(out.trim(), "INFO");
                     else if(out.indexOf("200") != -1 || out.indexOf("503") != -1)
