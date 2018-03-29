@@ -120,7 +120,7 @@ casper.test.begin('Functions', function(test) {
     /* Execute shell command in order to simulate notification to server */
     casper.execCommand = function(code, retry, pathGenerator) {
         data = data.replace(/\n/g, '&');
-        child = spawn('/bin/bash', [pathGenerator, data, code, baseURL + urlNotification]);
+        child = spawn('/bin/bash', [pathGenerator, '"'+data+'"', code, baseURL + urlNotification]);
         try {
             child.stdout.on('data', function(out) {
                 casper.wait(6000, function() {
