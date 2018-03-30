@@ -21,7 +21,7 @@ casper.test.begin('Functions', function (test) {
                 'card-number': giftCardNumber,
                 'cvv': giftCardCvv
             }
-        }).waitForUrl(/urlGiftCardAction/, function success() {
+        }).waitForUrl(/gift-card\.php$/, function success() {
             var maxAmountHTML = this.evaluate(function () {
                 return document.querySelector('p.data-print-row:nth-child(10)').innerHTML.replace(',', '.');
             });
