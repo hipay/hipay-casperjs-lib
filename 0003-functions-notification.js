@@ -71,9 +71,17 @@ casper.test.begin('Functions', function(test) {
             }
         })
         .then(function() {
+            this.wait(15000, function() {
+            });
+        })
+        .then(function() {
             if (request) {
                 this.openAndExecNotifications("117");
             }
+        })
+        .then(function() {
+            this.wait(15000, function() {
+            });
         })
         .then(function() {
             if (capture) {
