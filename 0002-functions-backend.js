@@ -119,7 +119,12 @@ casper.test.begin('Functions', function(test) {
 
     /* Execute shell command in order to simulate notification to server */
     casper.execCommand = function(code, retry, pathGenerator) {
+        this.echo("Exec Command", "INFO");
         data = data.replace(/\n/g, '&');
+
+        this.echo("data : " + data, "INFO");
+        this.echo("code : " + code, "INFO");
+
         child = spawn('/bin/bash', [pathGenerator, data, code, baseURL + urlNotification]);
         try {
             child.stdout.on('data', function(out) {
