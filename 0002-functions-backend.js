@@ -125,6 +125,8 @@ casper.test.begin('Functions', function (test) {
         this.echo("data : " + data, "INFO");
         this.echo("code : " + code, "INFO");
 
+        output = '';
+
         child = spawn('/bin/bash', [pathGenerator, data, code, baseURL + urlNotification]);
         try {
             child.stdout.on('data', function (out) {
