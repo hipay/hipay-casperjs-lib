@@ -36,7 +36,9 @@ casper.test.begin('Functions', function(test) {
         })
         /* Check CURL status code */
         .then(function() {
-            this.checkCurl("200");
+	    this.wait(2000,function() {
+		this.checkCurl("200");
+	    });
         })
     }
 

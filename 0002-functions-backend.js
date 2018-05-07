@@ -98,6 +98,7 @@ casper.test.begin('Functions', function (test) {
 
     /* Get data request and hash code from the details */
     casper.gettingData = function (status) {
+        data='';
         this.echo("Getting data request from details...", "INFO");
         this.waitUntilVisible('div#fsmodal', function success() {
             hash = this.fetchText(x('//tr/td/pre[contains(., "Hash")]')).split('\n')[6].split(':')[1].trim();
