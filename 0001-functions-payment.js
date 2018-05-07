@@ -232,19 +232,23 @@ casper.test.begin('Functions', function (test) {
         casper.fillFormIDeal = function () {
             this.waitForUrl(/payment\/web\/pay/, function success() {
                 this.fillSelectors("form#form-payment", {
-                    'select[name="issuer_bank_id"]': "TESTNL99"
+                    'select[name="issuer_bank_id"]': "INGBNL2A"
                 }, true);
 
-                this.waitForUrl(/paymentscreen\/testmode/, function success() {
-                    this.click('input[name="final_state"][value="paid"]');
-                    this.click('#footer button.button');
-                    test.info("Done");
-
-                }, function fail() {
-                    test.assertUrlMatch(/paymentscreen\/ideal\/testmode/, "Payment IDeal page exists");
-                }, 15000);
+                this.payIDeal();
             }, function fail() {
                 test.assertUrlMatch(/payment\/web\/pay/, "Payment page exists");
+            }, 15000);
+        },
+
+        casper.payIDeal = function () {
+            this.waitForUrl(/paymentscreen\/testmode/, function success() {
+                this.click('input[name="final_state"][value="paid"]');
+                this.click('#footer button.button');
+                test.info("Done");
+
+            }, function fail() {
+                test.assertUrlMatch(/paymentscreen\/testmode/, "Payment IDeal page exists");
             }, 15000);
         },
 
