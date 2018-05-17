@@ -65,7 +65,7 @@ casper.test.begin('Functions', function(test) {
         })
         /* Search last created order */
         .then(function() {
-            this.searchAndSelectOrder(cartID);
+            this.searchAndSelectOrder(cartID, false);
         })
         .then(function() {
             if (authorize) {

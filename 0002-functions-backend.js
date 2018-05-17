@@ -172,7 +172,7 @@ casper.test.begin('Functions', function (test) {
     };
 
     /* Search an order in engine */
-    casper.searchAndSelectOrder = function (orderID) {
+    casper.searchAndSelectOrder = function (orderID, retry) {
         this.echo("Finding cart ID # " + cartID + "and order ID# " + orderID + " in order list...", "INFO");
         this.waitForUrl(/manage/, function success() {
             this.click('input#checkbox-orderid');
@@ -188,7 +188,13 @@ casper.test.begin('Functions', function (test) {
                 this.waitForSelector('table.datatable-transactions tbody tr:first-child a[data-original-title="View transaction details"]', function success() {
                     this.click('table.datatable-transactions tbody tr:first-child a[data-original-title="View transaction details"]');
                 }, function fail() {
-                    test.assertExists('table.datatable-transactions tbody tr:first-child', "History block of this order exists");
+                    if(retry){
+                        test.assertExists('table.datatable-transactions tbody tr:first-child a[data-original-title="View transaction details"]', "History block of this order exists");
+                    }else{
+                        test.info("Order not found retry once");
+                        this.goToTabTransactions();
+                        this.searchAndSelectOrder(orderID, true);
+                    }
                 }, 25000);
             }, function fail() {
                 test.assertUrlMatch(/list/, "Manage list exists");
