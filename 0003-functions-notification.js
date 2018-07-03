@@ -64,7 +64,7 @@ function processNotifications(authorize, request, capture, partial, account, bac
         if (!casper.getCurrentUrl().match(/dashboard/)) {
             backendHiPay.logToHipayBackend(loginBackend, passBackend);
         } else {
-            test.info("Already logged to HiPay backend");
+            this.echo("Already logged to HiPay backend", "COMMENT");
         }
     })
     /* Select sub-account use for test*/

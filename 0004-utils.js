@@ -10,7 +10,7 @@
  *
  */
 
-var parameters = require('0000-parameters');
+var parameters = require('./0000-parameters');
 
 function refillOneyGiftCard(test) {
     casper.echo('Prepaid card Number: ' + parameters.giftCardNumber, "COMMENT");

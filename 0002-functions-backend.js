@@ -23,7 +23,7 @@ function logToHipayBackend(test, loginBackend, passBackend) {
     casper.echo("Accessing and logging to TPP BackOffice...", "INFO");
 
     if (!loginBackend || !passBackend) {
-        this.echo("WARNING: No Backend credentials available !", "WARNING");
+        casper.echo("WARNING: No Backend credentials available !", "WARNING");
         test.done();
     }
 
@@ -104,7 +104,7 @@ function openingNotif(test, status, reloaded) {
                 casper.echo("Waiting for notifications...", "WARNING")
                 casper.wait(5000, function () {
                     casper.reload();
-                    test.info("Done");
+                    casper.echo("Done", "COMMENT");
                     openingNotif(test, status, true);
                 });
             } else {
@@ -173,7 +173,7 @@ function execCommand(test, code, retry, pathGenerator, request, baseURL, urlNoti
             if (out.indexOf("CURL") !== -1) {
                 casper.echo(out.trim(), "INFO");
             } else {
-                test.info("Done");
+                casper.echo("Done", "COMMENT");
                 return out;
             }
         });

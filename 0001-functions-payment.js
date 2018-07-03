@@ -10,7 +10,7 @@
  *
  */
 
-var parameters = require('0000-parameters');
+var parameters = require('./0000-parameters');
 
 /**
  * FILL ALL HIPAY PAYMENT PAGE
