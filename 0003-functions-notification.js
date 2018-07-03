@@ -1,94 +1,107 @@
-/* Return 1D array from multiple dimensional array */
-function concatTable(arrToConvert) {
-    var newArr = [];
-    for(var i = 0; i < arrToConvert.length; i++)
-    {
-        newArr = newArr.concat(arrToConvert[i]);
-    }
-    return newArr;
-};
-/* return random number between 2 specific numbers */
-function randNumbInRange(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-};
+/**
+ * HiPay Enterprise SDK Casper JS
+ *
+ * 2017 HiPay
+ *
+ * NOTICE OF LICENSE
+ *
+ * @author    HiPay <support.tpp@hipay.com>
+ * @copyright 2017 HiPay
+ *
+ */
 
-var output = "",
-    notif117 = true,
-    reload = false;
-
-
-casper.test.begin('Functions', function(test) {
-
-    /* Open and send notificatiosn to server */
-    casper.openAndExecNotifications = function(code) {
-        /* Open Notification tab and opening this notifications details */
-        casper.then(function() {
-            this.echo("Opening Notification details with status " + code + " .... ", "INFO");
-            this.openingNotif(code);
-        })
-        /* Get data from Notification with code */
-        .then(function() {
-            this.gettingData(code);
+/**
+ * Open and send notifications to server
+ *
+ * @param test
+ * @param code
+ * @param backendHiPay
+ * @param baseURL
+ * @param urlNotification
+ */
+function openAndExecNotifications(test, code, backendHiPay, baseURL, urlNotification) {
+    var request = {};
+    var output = '';
+    /* Open Notification tab and opening this notifications details */
+    casper.then(function () {
+        this.echo("Opening Notification details with status " + code + " .... ", "INFO");
+        backendHiPay.openingNotif(test, code, false);
+    })
+    /* Get data from Notification with code */
+        .then(function () {
+            request = backendHiPay.gettingData(test, code);
         })
         /* Execute shell script */
-        .then(function() {
-            this.execCommand(hash,false,pathGenerator);
+        .then(function () {
+            output = backendHiPay.execCommand(hash, false, pathGenerator, request, baseURL, urlNotification);
         })
         /* Check CURL status code */
-        .then(function() {
-	    this.wait(2000,function() {
-		this.checkCurl("200");
-	    });
+        .then(function () {
+            backendHiPay.checkCurl(test, "200", output);
         })
-    }
+}
 
-    casper.processNotifications = function(authorize,request,capture,partial,account) {
-        casper.thenOpen(urlBackend,function() {
-            if (loginBackend == '' && passBackend == '') {
-                loginBackend = casper.cli.get('login-backend');
-                passBackend = casper.cli.get('pass-backend');
-            }
+/**
+ *
+ * @param authorize
+ * @param request
+ * @param capture
+ * @param partial
+ * @param account
+ * @param backendHiPay
+ * @param loginBackend
+ * @param passBackend
+ * @param baseURL
+ * @param urlNotification
+ */
+function processNotifications(authorize, request, capture, partial, account, backendHiPay, loginBackend, passBackend, baseURL, urlNotification) {
+    casper.thenOpen(urlBackend, function () {
+        if (loginBackend === '' && passBackend === '') {
+            loginBackend = casper.cli.get('login-backend');
+            passBackend = casper.cli.get('pass-backend');
+        }
 
-            if (!casper.getCurrentUrl().match(/dashboard/)) {
-                this.logToHipayBackend(loginBackend,passBackend);
-            } else {
-                test.info("Already logged to HiPay backend");
-            }
-        })
-        /* Select sub-account use for test*/
-        .then(function() {
-            this.selectAccountBackend(account);
+        if (!casper.getCurrentUrl().match(/dashboard/)) {
+            backendHiPay.logToHipayBackend(loginBackend, passBackend);
+        } else {
+            test.info("Already logged to HiPay backend");
+        }
+    })
+    /* Select sub-account use for test*/
+        .then(function () {
+            backendHiPay.selectAccountBackend(test, account);
         })
         /* Open Transactions tab */
-        .then(function() {
-            this.goToTabTransactions();
+        .then(function () {
+            backendHiPay.goToTabTransactions(test);
         })
         /* Search last created order */
-        .then(function() {
-            this.searchAndSelectOrder(cartID, false);
+        .then(function () {
+            backendHiPay.searchAndSelectOrder(test, cartID, false);
         })
-        .then(function() {
+        .then(function () {
             if (authorize) {
-                this.openAndExecNotifications("116");
+                openAndExecNotifications(test, "116", backendHiPay, baseURL, urlNotification);
             }
         })
-        .then(function() {
+        .then(function () {
             if (request) {
-                this.openAndExecNotifications("117");
+                openAndExecNotifications(test, "117", backendHiPay, baseURL, urlNotification);
             }
         })
-        .then(function() {
+        .then(function () {
             if (capture) {
-                this.openAndExecNotifications("118");
+                openAndExecNotifications(test, "118", backendHiPay, baseURL, urlNotification);
             }
         })
         /* Check returned CURL status code 403 from this shell command */
-        .then(function() {
+        .then(function () {
             // TODO Implement correct http response in module
         })
-    }
+}
 
-	casper.echo('Functions for notification loaded !', 'INFO');
-	test.info("Based URL: " + baseURL);
-    test.done();
-});
+
+module.exports = {
+    openAndExecNotifications: openAndExecNotifications,
+    processNotifications: processNotifications
+};

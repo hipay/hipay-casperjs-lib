@@ -9,60 +9,62 @@
  * @copyright 2017 HiPay
  *
  */
-casper.test.begin('Functions', function (test) {
 
-    casper.refillOneyGiftCard = function () {
-        test.info('Prepaid card Number: ' + giftCardNumber);
-        test.info('Prepaid card cvv: ' + giftCardCvv);
-        this.thenOpen(urlGiftCardAction, {
-            method: 'post',
-            data: {
-                'action': 'consult',
-                'card-number': giftCardNumber,
-                'cvv': giftCardCvv
-            }
-        }).waitForUrl(/gift-card\.php$/, function success() {
-            var maxAmountHTML = this.evaluate(function () {
-                return document.querySelector('p.data-print-row:nth-child(10)').innerHTML.replace(',', '.');
-            });
-            var currentAmountHTML = this.evaluate(function () {
-                return document.querySelector('p.data-print-row:nth-child(12)').innerHTML.replace(',', '.');
-            });
+var parameters = require('0000-parameters');
 
-            var maxAmount = parseFloat(maxAmountHTML);
-            var currentAmount = parseFloat(currentAmountHTML);
+function refillOneyGiftCard(test) {
+    casper.echo('Prepaid card Number: ' + parameters.giftCardNumber, "COMMENT");
+    casper.echo('Prepaid card cvv: ' + parameters.giftCardCvv, "COMMENT");
+    casper.thenOpen(parameters.urlGiftCardAction, {
+        method: 'post',
+        data: {
+            'action': 'consult',
+            'card-number': parameters.giftCardNumber,
+            'cvv': parameters.giftCardCvv
+        }
+    }).waitForUrl(/gift-card\.php$/, function success() {
+        var maxAmountHTML = this.evaluate(function () {
+            return document.querySelector('p.data-print-row:nth-child(10)').innerHTML.replace(',', '.');
+        });
+        var currentAmountHTML = this.evaluate(function () {
+            return document.querySelector('p.data-print-row:nth-child(12)').innerHTML.replace(',', '.');
+        });
 
-            var creditAmount = maxAmount - currentAmount;
-            test.info('Prepaid card maximum amount: ' + maxAmount);
-            test.info('Prepaid card current amount: ' + currentAmount);
-            test.info('Prepaid card credit amount: ' + creditAmount);
+        var maxAmount = parseFloat(maxAmountHTML);
+        var currentAmount = parseFloat(currentAmountHTML);
 
-            if (maxAmount > currentAmount) {
-                // On crédite la carte pour qu'elle soit au maximum
-                this.thenOpen(urlGiftCardAction, {
-                    method: 'post',
-                    data: {
-                        'action': 'credit',
-                        'card-number': giftCardNumber,
-                        'cvv': giftCardCvv,
-                        'amount': creditAmount
-                    }
-                }).then(function () {
-                    var currentCreditedAmount = this.evaluate(function () {
-                        return parseInt(document.querySelector('p.data-print-row:nth-child(12)').innerHTML);
-                    });
-                    test.assertEquals(maxAmount, currentCreditedAmount, 'Current prepaid card amount equals to' +
-                        ' maximum amount');
-                })
-            } else {
-                test.assertEquals(maxAmount, currentAmount, 'Current prepaid card amount equals to maximum amount');
-            }
+        var creditAmount = maxAmount - currentAmount;
+        casper.echo('Prepaid card maximum amount: ' + maxAmount, "COMMENT");
+        casper.echo('Prepaid card current amount: ' + currentAmount, "COMMENT");
+        casper.echo('Prepaid card credit amount: ' + creditAmount, "COMMENT");
 
-        }, function fail() {
-            test.assertUrlMatch(/urlGiftCardAction/, "urlGiftCardAction page exists");
-        }, 25000);
-    };
+        if (maxAmount > currentAmount) {
+            // On crédite la carte pour qu'elle soit au maximum
+            casper.thenOpen(parameters.urlGiftCardAction, {
+                method: 'post',
+                data: {
+                    'action': 'credit',
+                    'card-number': parameters.giftCardNumber,
+                    'cvv': parameters.giftCardCvv,
+                    'amount': creditAmount
+                }
+            }).then(function () {
+                var currentCreditedAmount = this.evaluate(function () {
+                    return parseInt(document.querySelector('p.data-print-row:nth-child(12)').innerHTML);
+                });
+                test.assertEquals(maxAmount, currentCreditedAmount, 'Current prepaid card amount equals to' +
+                    ' maximum amount');
+            })
+        } else {
+            test.assertEquals(maxAmount, currentAmount, 'Current prepaid card amount equals to maximum amount');
+        }
 
-    casper.echo('Functions HiPay library Utils loaded !', 'INFO');
-    test.done();
-});
+    }, function fail() {
+        test.assertUrlMatch(/urlGiftCardAction/, "urlGiftCardAction page exists");
+    }, 25000);
+}
+
+module.exports = {
+    refillOneyGiftCard: refillOneyGiftCard
+};
+
