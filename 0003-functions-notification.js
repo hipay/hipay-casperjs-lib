@@ -54,7 +54,7 @@ function openAndExecNotifications(test, code, backendHiPay, baseURL, urlNotifica
  * @param baseURL
  * @param urlNotification
  */
-function processNotifications(test, authorize, request, capture, partial, account, backendHiPay, loginBackend, passBackend, baseURL, urlNotification) {
+function processNotifications(test, orderID, authorize, request, capture, partial, account, backendHiPay, loginBackend, passBackend, baseURL, urlNotification) {
     casper.thenOpen(urlBackend, function () {
         if (loginBackend === '' && passBackend === '') {
             loginBackend = casper.cli.get('login-backend');
@@ -77,7 +77,7 @@ function processNotifications(test, authorize, request, capture, partial, accoun
         })
         /* Search last created order */
         .then(function () {
-            backendHiPay.searchAndSelectOrder(test, cartID, false);
+            backendHiPay.searchAndSelectOrder(test, orderID, false);
         })
         .then(function () {
             if (authorize) {

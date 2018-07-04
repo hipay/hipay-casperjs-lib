@@ -221,7 +221,7 @@ function checkCurl(test, httpCode, output) {
  * @param retried
  */
 function searchAndSelectOrder(test, orderID, retried) {
-    casper.echo("Finding cart ID # " + cartID + "and order ID# " + orderID + " in order list...", "INFO");
+    casper.echo("Finding order ID# " + orderID + " in order list...", "INFO");
     casper.waitForUrl(/manage/, function success() {
         casper.click('input#checkbox-orderid');
         casper.fillSelectors('form#form-manage', {
