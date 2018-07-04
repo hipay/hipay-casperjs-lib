@@ -54,7 +54,7 @@ function openAndExecNotifications(test, code, backendHiPay, baseURL, urlNotifica
  * @param baseURL
  * @param urlNotification
  */
-function processNotifications(authorize, request, capture, partial, account, backendHiPay, loginBackend, passBackend, baseURL, urlNotification) {
+function processNotifications(test, authorize, request, capture, partial, account, backendHiPay, loginBackend, passBackend, baseURL, urlNotification) {
     casper.thenOpen(urlBackend, function () {
         if (loginBackend === '' && passBackend === '') {
             loginBackend = casper.cli.get('login-backend');
@@ -62,7 +62,7 @@ function processNotifications(authorize, request, capture, partial, account, bac
         }
 
         if (!casper.getCurrentUrl().match(/dashboard/)) {
-            backendHiPay.logToHipayBackend(loginBackend, passBackend);
+            backendHiPay.logToHipayBackend(test, loginBackend, passBackend);
         } else {
             this.echo("Already logged to HiPay backend", "COMMENT");
         }
