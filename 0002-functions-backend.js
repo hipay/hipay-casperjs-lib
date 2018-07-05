@@ -79,6 +79,44 @@ function selectAccountBackend(test, name) {
 }
 
 /**
+ * Select hash Algorithm in account preferences
+ *
+ * @param test
+ * @param hashing
+ */
+function selectHashingAlgorithm(test, hashing) {
+    casper.then(function () {
+        this.click('a.nav-integration');
+        this.waitForSelector('div.box-content a:nth-child(3)', function success() {
+
+            this.thenClick('div.box-content a:nth-child(3)', function () {
+
+                this.waitForUrl(/security/, function success() {
+                    this.echo("Selecting Hashing Algorithm", "INFO");
+                    this.fillSelectors('form.form-vertical', {
+                        'select[name="hash_algorithm"]': hashing
+                    }, false);
+                    this.click('div.form-actions button[type="submit"]');
+
+                    this.waitForText('Settings have been successfully updated', function success() {
+                        this.echo("Done", "COMMENT");
+
+                    }, function fail() {
+                        test.assertExists('div.box-content a:nth-child(3)', "Security tab exists");
+                    });
+
+                }, function fail() {
+                    test.assertUrlMatch(/security/, "Security page exists");
+                });
+
+            });
+        }, function fail() {
+            test.assertExists('div.box-content a:nth-child(3)', "Security tab exists");
+        });
+    });
+}
+
+/**
  * Open notification details
  *
  * @param test
@@ -218,6 +256,7 @@ function goToTabTransactions(test) {
 module.exports = {
     logToHipayBackend: logToHipayBackend,
     selectAccountBackend: selectAccountBackend,
+    selectHashingAlgorithm: selectHashingAlgorithm,
     openingNotif: openingNotif,
     gettingData: gettingData,
     sendNotification: sendNotification,
