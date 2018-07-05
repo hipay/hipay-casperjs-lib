@@ -10,8 +10,6 @@
  *
  */
 
-var childProcess = require("child_process");
-
 /**
  * Log to TPP BO
  *
@@ -123,94 +121,44 @@ function openingNotif(test, status, reloaded) {
 function gettingData(test, status) {
     var data = '';
     var hash = '';
-
+    var request = {'data': data, 'hash': hash};
     casper.echo("Getting data request from details...", "INFO");
     casper.waitUntilVisible('div#fsmodal', function success() {
         hash = this.fetchText(x('//tr/td/pre[contains(., "Hash")]')).split('\n')[6].split(':')[1].trim();
         data = this.fetchText('textarea.copy-transaction-message-textarea');
-        try {
-
-            test.assert(hash.length > 1, "Hash Code captured :" + hash);
-            test.assertNotEquals(data.indexOf("status=" + status), -1, "Data request captured !");
-
-            return {data: data, hash: hash};
-        } catch (e) {
-
-            if (String(e).indexOf("Hash") !== -1) {
-                test.fail("Failure: Hash Code not captured");
-            } else {
-                test.fail("Failure: data request not captured");
-            }
-        }
+        request["data"] = data;
+        request["hash"] = hash;
 
         casper.click("div.modal-backdrop");
     }, function fail() {
         test.assertVisible('div#fsmodal', "Modal window exists");
     });
+
+    return request;
 }
 
 /**
- * Execute shell command in order to simulate notification to server
+ * Send notification
  *
  * @param test
- * @param code
- * @param retry
- * @param pathGenerator
  * @param request
  * @param baseURL
  * @param urlNotification
+ * @param httpStatus
  */
-function execCommand(test, code, retry, pathGenerator, request, baseURL, urlNotification) {
-    casper.echo("Exec Command", "INFO");
+function sendNotification(test, request, baseURL, urlNotification, httpStatus) {
+    casper.echo("Sending notification", "INFO");
     var data = request.data.replace(/\n/g, '&');
-
     casper.echo("data : " + data, "INFO");
-    casper.echo("code : " + code, "INFO");
-
-    var child = childProcess.spawnSync('/bin/bash', [pathGenerator, data, code, baseURL + urlNotification]);
-    try {
-        child.stdout.on('data', function (out) {
-            if (out.indexOf("CURL") !== -1) {
-                casper.echo(out.trim(), "INFO");
-            } else {
-                casper.echo("Done", "COMMENT");
-                return out;
-            }
-        });
-        child.stderr.on('data', function (err) {
-            casper.wait(2000, function () {
-                casper.echo(err, "WARNING");
-            });
-        });
-    } catch (e) {
-        if (!retry) {
-            casper.echo("Error during file execution! Retry command...", "WARNING");
-            execCommand(test, code, true, pathGenerator, request, baseURL, urlNotification);
-        } else {
-            test.fail("Failure on child processing command");
-        }
-    }
-}
-
-/**
- * Test CURL status code from shell command
- *
- * @param test
- * @param httpCode
- * @param output
- */
-function checkCurl(test, httpCode, output) {
-    try {
-        test.assertNotEquals(output.indexOf(httpCode), -1, "Correct CURL Status Code " + httpCode + " from CURL command !");
-    } catch (e) {
-        if (output.indexOf("503") != -1) {
-            test.fail("Failure on CURL Status Code from CURL command: 503");
-        } else if (output == "") {
-            test.comment("Empty response");
-        } else {
-            test.fail("Failure on CURL Status Code from CURL command: " + output.trim());
-        }
-    }
+    casper.echo("hash : " + request.hash, "INFO");
+    casper.thenOpen(baseURL + urlNotification, {
+        method: "POST",
+        data: data,
+        headers: {'X-ALLOPASS-SIGNATURE': request.hash}
+    }, function (response) {
+        test.assertEquals(response.status, httpStatus, "Correct CURL Status Code " + response.status + " from CURL command !");
+        casper.back();
+    });
 }
 
 /**
@@ -272,8 +220,7 @@ module.exports = {
     selectAccountBackend: selectAccountBackend,
     openingNotif: openingNotif,
     gettingData: gettingData,
-    execCommand: execCommand,
-    checkCurl: checkCurl,
+    sendNotification: sendNotification,
     searchAndSelectOrder: searchAndSelectOrder,
     goToTabTransactions: goToTabTransactions
 };

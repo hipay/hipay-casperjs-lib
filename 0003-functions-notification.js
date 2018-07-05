@@ -21,7 +21,6 @@
  */
 function openAndExecNotifications(test, code, backendHiPay, baseURL, urlNotification) {
     var request = {};
-    var output = '';
     /* Open Notification tab and opening this notifications details */
     casper.then(function () {
         this.echo("Opening Notification details with status " + code + " .... ", "INFO");
@@ -31,13 +30,10 @@ function openAndExecNotifications(test, code, backendHiPay, baseURL, urlNotifica
         .then(function () {
             request = backendHiPay.gettingData(test, code);
         })
-        /* Execute shell script */
         .then(function () {
-            output = backendHiPay.execCommand(hash, false, pathGenerator, request, baseURL, urlNotification);
-        })
-        /* Check CURL status code */
-        .then(function () {
-            backendHiPay.checkCurl(test, "200", output);
+            test.assert(request.hash.length > 1, "Hash Code captured :" + request.hash);
+            test.assertNotEquals(request.data.indexOf("status=" + code), -1, "Data request captured !");
+            backendHiPay.sendNotification(test, request, baseURL, urlNotification, 200);
         })
 }
 
@@ -93,10 +89,6 @@ function processNotifications(test, orderID, authorize, request, capture, partia
             if (capture) {
                 openAndExecNotifications(test, "118", backendHiPay, baseURL, urlNotification);
             }
-        })
-        /* Check returned CURL status code 403 from this shell command */
-        .then(function () {
-            // TODO Implement correct http response in module
         })
 }
 
