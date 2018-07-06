@@ -377,5 +377,6 @@ function fillFormPaymentHipayCC(type, card) {
 }
 
 module.exports = {
-    fillPaymentFormularByPaymentProduct: fillPaymentFormularByPaymentProduct
+    fillPaymentFormularByPaymentProduct: fillPaymentFormularByPaymentProduct,
+    payIDeal: payIDeal
 };
