@@ -1,0 +1,14 @@
+image: hipay/gitlab-ci-base:jessie
+
+stages:
+ - sync
+
+sync:
+  stage: sync
+  script:
+    - git clone --mirror https://$GITLAB_USER:$GITLAB_PASSWORD@gitlab.hipay.org/pi-ecommerce/hipay-casperjs-lib.git
+    - cd hipay-casperjs-lib.git
+    - git push --mirror https://$GITHUB_USER:$GITHUB_PASSWORD@github.com/hipay/hipay-casperjs-lib.git
+  allow_failure: true
+  tags:
+    - pi-ecommerce
