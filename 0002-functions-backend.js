@@ -162,7 +162,7 @@ function gettingData(test, status) {
     var request = {'data': data, 'hash': hash};
     casper.echo("Getting data request from details...", "INFO");
     casper.waitUntilVisible('div#fsmodal', function success() {
-        hash = this.fetchText(x('//tr/td/pre[contains(., "Hash")]')).split('\n')[6].split(':')[1].trim();
+        hash = this.fetchText(x('//tr/td/pre[contains(., "Hash")]')).split('\n')[5].split(':')[1].trim();
         data = this.fetchText('textarea.copy-transaction-message-textarea');
         request["data"] = data;
         request["hash"] = hash;
