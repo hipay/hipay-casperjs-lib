@@ -101,7 +101,7 @@ casper.test.begin('Functions', function (test) {
         data='';
         this.echo("Getting data request from details...", "INFO");
         this.waitUntilVisible('div#fsmodal', function success() {
-            hash = this.fetchText(x('//tr/td/pre[contains(., "Hash")]')).split('\n')[6].split(':')[1].trim();
+            hash = this.fetchText(x('//tr/td/pre[contains(., "Hash")]')).split('\n')[3].split(':')[1].trim();
             data = this.fetchText('textarea.copy-transaction-message-textarea');
             try {
                 test.assert(hash.length > 1, "Hash Code captured :" + hash);
