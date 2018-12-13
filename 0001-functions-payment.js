@@ -202,7 +202,7 @@ casper.test.begin('Functions', function (test) {
                                     test.info("Account selected");
                                     this.waitForUrl(/go\/provide_tan/, function success() {
                                         this.fillSelectors('form#WizardForm', {
-                                            'input#BackendFormTan': "12345"
+                                            'input#BackendFormTAN': "12345"
                                         }, false);
                                         this.click("form#WizardForm button");
                                         test.info("TAN code inserted");
