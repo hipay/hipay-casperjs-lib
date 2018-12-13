@@ -201,7 +201,7 @@ function fillFormPostFinance(test) {
 function fillFormSofort(test) {
     casper.waitForUrl(/go\/select_country/, function success() {
         casper.fillSelectors('form#WizardForm', {
-            'input[name="data[BankCode][search]"]': "00000",
+            'input[name="data[BankCode][search]"]': "Demo Bank",
         }, false);
 
         casper.waitForSelector('div#BankSearcherResultsContent a', function success() {
