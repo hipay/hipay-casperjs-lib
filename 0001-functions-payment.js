@@ -221,7 +221,7 @@ function fillFormSofort(test) {
                             casper.echo("Account selected", "COMMENT");
                             casper.waitForUrl(/go\/provide_tan/, function success() {
                                 casper.fillSelectors('form#WizardForm', {
-                                    'input#BackendFormTan': "12345"
+                                    'input#BackendFormTAN': "12345"
                                 }, false);
                                 casper.click("form#WizardForm button");
                                 casper.echo("TAN code inserted", "COMMENT");
