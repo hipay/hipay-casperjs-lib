@@ -191,7 +191,7 @@ casper.test.begin('Functions', function (test) {
                     this.wait(4000, function () {
                         this.waitForUrl(/go\/login/, function success() {
                                 this.fillSelectors('form#WizardForm', {
-                                    'input[name="data[BackendForm][LOGINNAME__USER_ID]"]': "00000",
+                                    'input[name="data[BackendForm][LOGINNAME__USER_ID]"]': "Demo Bank",
                                     'input[name="data[BackendForm][USER_PIN]"]': "123456789"
                                 }, false);
                                 this.click("form#WizardForm button");
