@@ -45,6 +45,9 @@ casper.test.begin('Functions', function (test) {
             case "carte-cadeau":
                 this.fillFormCarteCadeauOney();
                 break;
+            case "mybank":
+                this.fillFormMyBank();
+                break;
             case "visa":
             case "mastercard":
             case "maestro":
@@ -321,6 +324,37 @@ casper.test.begin('Functions', function (test) {
                 'input[name="prepaid_card_security_code"]': giftCardCvv
             }, true);
 
+        }, function fail() {
+            test.assertUrlMatch(/payment\/web\/pay/, "Payment page exists");
+        }, 15000);
+    };
+
+    /**********************************************************/
+    /*******                MyBank               ***/
+    /**********************************************************/
+    casper.fillFormMyBank = function () {
+        this.waitForUrl(/ti\/simmybank/, function success() {
+            this.click(x('//button[text()="Next"]'));
+
+            this.waitForSelector(x('//button[text()="Login"]'), function success() {
+                this.click(x('//button[text()="Login"]'));
+
+                this.waitForSelector(x('//button[text()="Make Payment"]'), function success() {
+                    this.click(x('//button[text()="Make Payment"]'));
+
+                    this.waitForSelector(x('//button[text()="Back to where you came from"]'), function success() {
+                        this.click(x('//button[text()="Back to where you came from"]'));
+                    }, function fail() {
+                        test.fail('Error on MyBank Payment page');
+                    },20000);
+
+                }, function fail() {
+                    test.fail('Error on MyBank Payment page');
+                },20000);
+
+            }, function fail() {
+                test.fail('Error on MyBank Payment page');
+            },20000);
         }, function fail() {
             test.assertUrlMatch(/payment\/web\/pay/, "Payment page exists");
         }, 15000);
