@@ -67,18 +67,20 @@ casper.test.begin('Functions', function (test) {
         casper.fillFormCC = function (payment_product) {
             this.waitForUrl(/payment\/web/, function success() {
                 this.echo("Filling hosted payment formular...", "INFO");
-                this.waitForSelector('input#cardNumber', function success() {
-                    this.fillCCFormular(payment_product);
-                }, function fail() {
-                    this.echo("VISA input doesn't exists. Checking for select field...", 'WARNING');
-                    this.waitForSelector('select#payment-product-switcher', function success() {
-                        this.warn("OK. This payment template is deprecated");
-                        this.fillSelectors('#form-payment', {
-                            'select[name="paymentproductswitcher"]': payment_product
-                        });
+                this.wait(10000, function () {
+                    this.waitForSelector('#cardNumber', function success() {
                         this.fillCCFormular(payment_product);
                     }, function fail() {
-                        test.assertExists('select#payment-product-switcher', "Select field exists");
+                        this.echo("VISA input doesn't exists. Checking for select field...", 'WARNING');
+                        this.waitForSelector('select#payment-product-switcher', function success() {
+                            this.warn("OK. This payment template is deprecated");
+                            // this.fillSelectors('#form-payment', {
+                            //     'select[name="paymentproductswitcher"]': payment_product
+                            // });
+                            this.fillCCFormular(payment_product);
+                        }, function fail() {
+                            test.assertExists('select#payment-product-switcher', "Select field exists");
+                        });
                     });
                 });
             }, function fail() {
@@ -87,34 +89,57 @@ casper.test.begin('Functions', function (test) {
         },
 
         /* Fill formular according to the template, with or without iframe */
-        casper.fillCCFormular = function (payment_product) {
+        casper.fillCCFormular = function (payment_product, iframe) {
             var holder = "MC",
                 month = "12",
                 year = "2020",
                 code = "500";
             this.wait(5000, function () {
-                if (this.exists('iframe#tokenizerFrame')) {
+                if (iframe) {
+
+                    this.echo("Filling iframe", "INFO");
+
                     this.withFrame(0, function () {
-                        this.fillSelectors('form#tokenizerForm', {
-                            'input[name="tokenizerForm:cardNumber"]': cardsNumber.visa,
-                            'input[name="tokenizerForm:cardHolder"]': holder,
-                            'select[name="tokenizerForm:cardExpiryMonth"]': month,
-                            'select[name="tokenizerForm:cardExpiryYear"]': year,
-                            'input[name="tokenizerForm:cardSecurityCode"]': code
-                        }, false);
+                        casper.withFrame(2, function () {
+                            casper.sendKeys('input[name="cardnumber"]', cardsNumber.visa);
+                        });
+                    });
+
+                    this.withFrame(0, function () {
+                        casper.withFrame(3, function () {
+                            casper.sendKeys('input[name="cc-exp"]', '06/21');
+                        });
+                    });
+
+                    this.withFrame(0, function () {
+                        casper.withFrame(4, function () {
+                            casper.sendKeys('input[name="cvc"]', code);
+                        });
+                    });
+                    this.withFrame(0, function () {
+                        this.thenClick('#submit-button', function () {
+                            test.info("Done");
+                        });
                     });
                 }
                 else {
-                    this.fillSelectors('form#form-payment', {
-                        'input[name="cardNumber"]': cardsNumber.visa,
-                        'select[name="cardExpiryMonth"]': month,
-                        'select[name="cardExpiryYear"]': year,
-                        'input[name="cardSecurityCode"]': code
-                    }, false);
+
+                    this.echo("Filling iframe", "INFO");
+
+                    casper.withFrame(2, function () {
+                        casper.sendKeys('input[name="cardnumber"]', cardsNumber.visa);
+                    });
+                    casper.withFrame(3, function () {
+                        casper.sendKeys('input[name="cc-exp"]', '06/21');
+                    });
+                    casper.withFrame(4, function () {
+                        casper.sendKeys('input[name="cvc"]', code);
+                    });
+
+                    this.thenClick('#submit-button', function () {
+                        test.info("Done");
+                    });
                 }
-                this.thenClick('#submit-button', function () {
-                    test.info("Done");
-                });
             });
         };
 
@@ -346,15 +371,15 @@ casper.test.begin('Functions', function (test) {
                         this.click(x('//button[text()="Back to where you came from"]'));
                     }, function fail() {
                         test.fail('Error on MyBank Payment page');
-                    },20000);
+                    }, 20000);
 
                 }, function fail() {
                     test.fail('Error on MyBank Payment page');
-                },20000);
+                }, 20000);
 
             }, function fail() {
                 test.fail('Error on MyBank Payment page');
-            },20000);
+            }, 20000);
         }, function fail() {
             test.assertUrlMatch(/payment\/web\/pay/, "Payment page exists");
         }, 15000);
