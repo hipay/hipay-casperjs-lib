@@ -52,80 +52,72 @@ function fillPaymentFormularByPaymentProduct(payment_product, test) {
         case "mybank":
             fillFormMyBank(test);
             break;
-        case "visa":
-        case "mastercard":
-        case "maestro":
-        case "cb":
-        case "visa_3ds":
-        case "amex":
-            fillFormCC(payment_product, test);
-            break;
         default:
             test.fail('Filling payment product is not implemented by HiPay SDK Casper JS')
     }
 }
 
-/**
- * Fill Hosted CC Form
- *
- * @param payment_product
- * @param test
- */
-function fillFormCC(payment_product, test) {
-    casper.waitForUrl(/payment\/web/, function success() {
-        casper.echo("Filling hosted payment formular...", "INFO");
-        casper.waitForSelector('input#cardNumber', function success() {
-            fillCCFormular(payment_product);
-        }, function fail() {
-            casper.echo("VISA input doesn't exists. Checking for select field...", 'WARNING');
-            casper.waitForSelector('select#payment-product-switcher', function success() {
-                casper.warn("OK. This payment template is deprecated");
-                casper.fillSelectors('#form-payment', {
-                    'select[name="paymentproductswitcher"]': payment_product
-                });
-                fillCCFormular(payment_product);
-            }, function fail() {
-                test.assertExists('select#payment-product-switcher', "Select field exists");
-            });
-        });
-    }, function fail() {
-        test.assertUrlMatch(/payment\/web/, "Payment page exists");
-    });
-}
 
 /**
  * Fill formular according to the template, with or without iframe
  *
- * @param payment_product
+ * @param test
+ * @param iframe
  */
-function fillCCFormular(payment_product) {
-    var holder = "MC",
-        month = "12",
+function fillCCFormular(test, iframe) {
+    var month = "12",
         year = "2020",
         code = "500";
 
     casper.wait(5000, function () {
-        if (casper.exists('iframe#tokenizerFrame')) {
+        if (iframe) {
+
+            casper.echo("Filling iframe", "INFO");
+
             casper.withFrame(0, function () {
-                casper.fillSelectors('form#tokenizerForm', {
-                    'input[name="tokenizerForm:cardNumber"]': parameters.cardsNumber.visa,
-                    'input[name="tokenizerForm:cardHolder"]': holder,
-                    'select[name="tokenizerForm:cardExpiryMonth"]': month,
-                    'select[name="tokenizerForm:cardExpiryYear"]': year,
-                    'input[name="tokenizerForm:cardSecurityCode"]': code
-                }, false);
+                casper.withFrame(2, function () {
+                    casper.sendKeys('input[name="cardnumber"]', parameters.cardsNumber.visa);
+                });
             });
+
+            casper.withFrame(0, function () {
+                casper.withFrame(3, function () {
+                    casper.sendKeys('input[name="cc-exp"]', '06/21');
+                });
+            });
+
+            casper.withFrame(0, function () {
+                casper.withFrame(4, function () {
+                    casper.sendKeys('input[name="cvc"]', code);
+                });
+            });
+            casper.withFrame(0, function () {
+                this.thenClick('#submit-button', function () {
+                    test.info("Done");
+                });
+            });
+
         } else {
-            casper.fillSelectors('form#form-payment', {
-                'input[name="cardNumber"]': parameters.cardsNumber.visa,
-                'select[name="cardExpiryMonth"]': month,
-                'select[name="cardExpiryYear"]': year,
-                'input[name="cardSecurityCode"]': code
-            }, false);
+            casper.waitForUrl(/payment\/web\/pay/, function success() {
+                casper.echo("Filling iframe", "INFO");
+
+                casper.withFrame(2, function () {
+                    casper.sendKeys('input[name="cardnumber"]', parameters.cardsNumber.visa);
+                });
+                casper.withFrame(3, function () {
+                    casper.sendKeys('input[name="cc-exp"]', '06/21');
+                });
+                casper.withFrame(4, function () {
+                    casper.sendKeys('input[name="cvc"]', code);
+                });
+
+                casper.thenClick('#submit-button', function () {
+                    test.info("Done");
+                });
+            }, function fail() {
+                test.assertUrlMatch(/payment\/web\/pay/, "Hosted payment page exists");
+            }, 10000);
         }
-        casper.thenClick('#submit-button', function () {
-            casper.echo("Done", "COMMENT");
-        });
     });
 }
 
@@ -414,5 +406,6 @@ function fillFormPaymentHipayCC(type, card) {
 
 module.exports = {
     fillPaymentFormularByPaymentProduct: fillPaymentFormularByPaymentProduct,
-    payIDeal: payIDeal
+    payIDeal: payIDeal,
+    fillCCFormular: fillCCFormular
 };
