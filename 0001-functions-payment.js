@@ -49,6 +49,9 @@ function fillPaymentFormularByPaymentProduct(payment_product, test) {
         case "carte-cadeau":
             fillFormCarteCadeauOney(test);
             break;
+        case "mybank":
+            fillFormMyBank(test);
+            break;
         case "visa":
         case "mastercard":
         case "maestro":
@@ -337,6 +340,39 @@ function fillFormDexiaDirectNet(test) {
         }, function fail() {
             test.assertUrlMatch(/netbanking_ACS/, "Payment Ogone second page exists");
         });
+    }, function fail() {
+        test.assertUrlMatch(/orderstandard/, "Payment Ogone page exists");
+    }, 15000);
+}
+
+/**
+ * Fill MyBank Form
+ *
+ * @param test
+ */
+function fillFormMyBank(test) {
+    casper.waitForUrl(/ti\/simmybank/, function success() {
+        casper.click(x('//button[text()="Next"]'));
+
+        casper.waitForSelector(x('//button[text()="Login"]'), function success() {
+            casper.click(x('//button[text()="Login"]'));
+
+            casper.waitForSelector(x('//button[text()="Make Payment"]'), function success() {
+                casper.click(x('//button[text()="Make Payment"]'));
+
+                casper.waitForSelector(x('//button[text()="Back to where you came from"]'), function success() {
+                    casper.click(x('//button[text()="Back to where you came from"]'));
+                }, function fail() {
+                    test.fail('Error on MyBank Payment page');
+                }, 20000);
+
+            }, function fail() {
+                test.fail('Error on MyBank Payment page');
+            }, 20000);
+
+        }, function fail() {
+            test.fail('Error on MyBank Payment page');
+        }, 20000);
     }, function fail() {
         test.assertUrlMatch(/orderstandard/, "Payment Ogone page exists");
     }, 15000);
