@@ -343,21 +343,18 @@ function fillFormDexiaDirectNet(test) {
  * @param test
  */
 function fillFormMyBank(test) {
-    casper.waitForUrl(/ti\/simmybank/, function success() {
-        casper.click(x('//button[text()="Next"]'));
+    casper.waitForUrl(/ti\/simunionpay/, function success() {
+        casper.fillSelectors("div#wrapper", {
+            'input[name="cardNumber"]': parameters.cardsNumber.visa,
+            'input[name="cvvCode"]': "123",
+            'input[name="cardHolderName"]': "Test name"
+        }, true);
 
-        casper.waitForSelector(x('//button[text()="Login"]'), function success() {
-            casper.click(x('//button[text()="Login"]'));
+        casper.waitForSelector(x('//button[text()="Make Payment"]'), function success() {
+            casper.click(x('//button[text()="Make Payment"]'));
 
-            casper.waitForSelector(x('//button[text()="Make Payment"]'), function success() {
-                casper.click(x('//button[text()="Make Payment"]'));
-
-                casper.waitForSelector(x('//button[text()="Back to where you came from"]'), function success() {
-                    casper.click(x('//button[text()="Back to where you came from"]'));
-                }, function fail() {
-                    test.fail('Error on MyBank Payment page');
-                }, 20000);
-
+            casper.waitForSelector(x('//button[text()="Back to where you came from"]'), function success() {
+                casper.click(x('//button[text()="Back to where you came from"]'));
             }, function fail() {
                 test.fail('Error on MyBank Payment page');
             }, 20000);
@@ -365,8 +362,9 @@ function fillFormMyBank(test) {
         }, function fail() {
             test.fail('Error on MyBank Payment page');
         }, 20000);
+
     }, function fail() {
-        test.assertUrlMatch(/orderstandard/, "Payment Ogone page exists");
+        test.assertUrlMatch(/simunionpay/, "Payment Ogone page exists");
     }, 15000);
 }
 
